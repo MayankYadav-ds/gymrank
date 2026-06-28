@@ -1,0 +1,102 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UnitPreference {
+  KG
+  LB
+}
+
+enum SexCategory {
+  MALE
+  FEMALE
+  OPEN
+  PREFER_NOT_TO_SAY
+}
+
+enum ExerciseCategory {
+  STRENGTH
+  HYPERTROPHY
+  BODYWEIGHT
+  ACCESSORY
+}
+
+enum ExerciseDifficulty {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
+}
+
+enum MuscleRegion {
+  FRONT
+  BACK
+  BOTH
+}
+
+enum MuscleTargetRole {
+  PRIMARY
+  SECONDARY
+}
+
+model User {
+  id                          String         @id @default(cuid())
+  email                       String         @unique
+  passwordHash                String
+  displayName                 String
+  country                     String?
+  unitPreference              UnitPreference @default(KG)
+  dateOfBirth                 DateTime?
+  sexCategory                 SexCategory?
+  bodyweight                  Decimal?       @db.Decimal(6, 2)
+  rankingParticipationEnabled Boolean        @default(false)
+  createdAt                   DateTime       @default(now())
+  updatedAt                   DateTime       @updatedAt
+
+  @@index([country])
+  @@index([sexCategory])
+  @@index([rankingParticipationEnabled])
+}
+
+model Muscle {
+  id        String           @id
+  name      String
+  region    MuscleRegion
+  exercises ExerciseMuscle[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+}
+
+model Exercise {
+  id            String             @id
+  name          String
+  category      ExerciseCategory
+  equipment     String
+  difficulty    ExerciseDifficulty
+  isTrackedLift Boolean            @default(false)
+  trackedLiftId String?            @unique
+  muscles       ExerciseMuscle[]
+  createdAt     DateTime           @default(now())
+  updatedAt     DateTime           @updatedAt
+
+  @@index([name])
+  @@index([category])
+  @@index([isTrackedLift])
+}
+
+model ExerciseMuscle {
+  exerciseId String
+  muscleId   String
+  role       MuscleTargetRole
+
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Cascade)
+  muscle   Muscle   @relation(fields: [muscleId], references: [id], onDelete: Restrict)
+
+  @@id([exerciseId, muscleId])
+  @@index([muscleId])
+  @@index([role])
+}

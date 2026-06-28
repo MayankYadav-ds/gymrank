@@ -7,6 +7,11 @@ import '../features/auth_profile/profile_setup_screen.dart';
 import '../features/auth_profile/register_screen.dart';
 import '../features/exercises/exercise_detail_screen.dart';
 import '../features/exercises/exercise_library_screen.dart';
+import '../features/workouts/add_set_screen.dart';
+import '../features/workouts/create_workout_screen.dart';
+import '../features/workouts/exercise_picker_screen.dart';
+import '../features/workouts/workout_detail_screen.dart';
+import '../features/workouts/workout_history_screen.dart';
 
 class GymRankApp extends StatelessWidget {
   const GymRankApp({super.key});
@@ -23,6 +28,11 @@ class GymRankApp extends StatelessWidget {
         ProfileSetupScreen.routeName: (_) => const ProfileSetupScreen(),
         ExerciseLibraryScreen.routeName: (_) => const ExerciseLibraryScreen(),
         ExerciseDetailScreen.routeName: (_) => const ExerciseDetailScreen(),
+        WorkoutHistoryScreen.routeName: (_) => const WorkoutHistoryScreen(),
+        WorkoutDetailScreen.routeName: (_) => const WorkoutDetailScreen(),
+        CreateWorkoutScreen.routeName: (_) => const CreateWorkoutScreen(),
+        ExercisePickerScreen.routeName: (_) => const ExercisePickerScreen(),
+        AddSetScreen.routeName: (_) => const AddSetScreen(),
       },
       home: const AppShell(),
     );

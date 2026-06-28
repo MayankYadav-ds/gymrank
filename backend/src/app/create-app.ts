@@ -14,9 +14,13 @@ import {
   registerExerciseRoutes,
   type ExerciseRouteDependencies
 } from "../modules/exercises/exercise.routes.js";
+import {
+  registerWorkoutRoutes,
+  type WorkoutRouteDependencies
+} from "../modules/workouts/workout.routes.js";
 import { errorHandler } from "../shared/errors/error-handler.js";
 
-export type AppDependencies = AuthProfileRouteDependencies & ExerciseRouteDependencies;
+export type AppDependencies = AuthProfileRouteDependencies & ExerciseRouteDependencies & WorkoutRouteDependencies;
 
 export function createApp(config: AppConfig, dependencies: AppDependencies = {}): Express {
   const app = express();
@@ -33,6 +37,7 @@ export function createApp(config: AppConfig, dependencies: AppDependencies = {})
   registerModuleRoutes(app);
   registerAuthProfileRoutes(app, config, dependencies);
   registerExerciseRoutes(app, dependencies);
+  registerWorkoutRoutes(app, config, dependencies);
   app.use(errorHandler);
 
   return app;

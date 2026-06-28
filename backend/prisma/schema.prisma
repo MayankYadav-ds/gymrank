@@ -43,6 +43,19 @@ enum MuscleTargetRole {
   SECONDARY
 }
 
+enum WorkoutStatus {
+  IN_PROGRESS
+  COMPLETED
+  CANCELED
+}
+
+enum WorkoutSetType {
+  NORMAL
+  WARM_UP
+  DROP_SET
+  FAILURE
+}
+
 model User {
   id                          String         @id @default(cuid())
   email                       String         @unique
@@ -54,6 +67,7 @@ model User {
   sexCategory                 SexCategory?
   bodyweight                  Decimal?       @db.Decimal(6, 2)
   rankingParticipationEnabled Boolean        @default(false)
+  workouts                    WorkoutSession[]
   createdAt                   DateTime       @default(now())
   updatedAt                   DateTime       @updatedAt
 
@@ -80,6 +94,7 @@ model Exercise {
   isTrackedLift Boolean            @default(false)
   trackedLiftId String?            @unique
   muscles       ExerciseMuscle[]
+  workoutExercises WorkoutExercise[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
 
@@ -99,4 +114,56 @@ model ExerciseMuscle {
   @@id([exerciseId, muscleId])
   @@index([muscleId])
   @@index([role])
+}
+
+model WorkoutSession {
+  id         String            @id @default(cuid())
+  userId     String
+  title      String?
+  notes      String?
+  status     WorkoutStatus     @default(IN_PROGRESS)
+  startedAt  DateTime          @default(now())
+  finishedAt DateTime?
+  canceledAt DateTime?
+  createdAt  DateTime          @default(now())
+  updatedAt  DateTime          @updatedAt
+
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercises WorkoutExercise[]
+
+  @@index([userId, startedAt])
+  @@index([userId, status])
+}
+
+model WorkoutExercise {
+  id               String         @id @default(cuid())
+  workoutSessionId String
+  exerciseId       String
+  orderIndex       Int
+  notes            String?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+
+  workoutSession WorkoutSession @relation(fields: [workoutSessionId], references: [id], onDelete: Cascade)
+  exercise       Exercise       @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  sets           WorkoutSet[]
+
+  @@index([workoutSessionId, orderIndex])
+  @@index([exerciseId])
+}
+
+model WorkoutSet {
+  id                String         @id @default(cuid())
+  workoutExerciseId String
+  orderIndex        Int
+  weight            Decimal        @db.Decimal(8, 2)
+  reps              Int
+  type              WorkoutSetType @default(NORMAL)
+  completed         Boolean        @default(false)
+  createdAt         DateTime       @default(now())
+  updatedAt         DateTime       @updatedAt
+
+  workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+
+  @@index([workoutExerciseId, orderIndex])
 }

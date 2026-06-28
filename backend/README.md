@@ -49,3 +49,19 @@ Ranking eligibility is calculated at profile level only. The `valid_tracked_lift
 The exercise API is read-only in Milestone 3 and keeps anatomy exercise-centric.
 
 Exercise data is database-backed as of Milestone 3.5. The seed is idempotent and can be rerun safely after migrations.
+
+## Workout Endpoints
+
+- `POST /v1/workouts`
+- `GET /v1/workouts`
+- `GET /v1/workouts/:id`
+- `PATCH /v1/workouts/:id`
+- `DELETE /v1/workouts/:id`
+- `POST /v1/workouts/:id/exercises`
+- `PATCH /v1/workouts/:id/exercises/:exerciseId`
+- `DELETE /v1/workouts/:id/exercises/:exerciseId`
+- `POST /v1/workouts/:id/sets`
+- `PATCH /v1/workouts/:id/sets/:setId`
+- `DELETE /v1/workouts/:id/sets/:setId`
+
+Workout logging does not calculate PRs, rankings, overload recommendations, analytics, or achievements yet.

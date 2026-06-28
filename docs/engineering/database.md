@@ -40,3 +40,15 @@ The seed is idempotent:
 ## Pending Runtime Verification
 
 Real PostgreSQL migration and seed verification depends on Dockerized PostgreSQL availability.
+
+## Milestone 4 Workout Logging
+
+Milestone 4 adds:
+
+- `WorkoutSession`
+- `WorkoutExercise`
+- `WorkoutSet`
+- `WorkoutStatus`
+- `WorkoutSetType`
+
+Workout sessions belong to users. Workout exercises belong to workout sessions and reference catalog exercises. Workout sets belong to workout exercises.

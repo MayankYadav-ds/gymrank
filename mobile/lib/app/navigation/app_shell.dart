@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../features/auth_profile/login_screen.dart';
 import '../../features/auth_profile/profile_setup_screen.dart';
 import '../../features/auth_profile/register_screen.dart';
+import '../../features/exercises/exercise_library_screen.dart';
 
 class AppShell extends StatelessWidget {
   const AppShell({super.key});
@@ -54,6 +55,10 @@ class _FoundationView extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.of(context).pushNamed(ProfileSetupScreen.routeName),
               child: const Text('Profile setup'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed(ExerciseLibraryScreen.routeName),
+              child: const Text('Exercises'),
             ),
           ],
         ),

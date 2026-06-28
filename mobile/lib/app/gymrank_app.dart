@@ -5,6 +5,8 @@ import 'theme/gymrank_theme.dart';
 import '../features/auth_profile/login_screen.dart';
 import '../features/auth_profile/profile_setup_screen.dart';
 import '../features/auth_profile/register_screen.dart';
+import '../features/exercises/exercise_detail_screen.dart';
+import '../features/exercises/exercise_library_screen.dart';
 
 class GymRankApp extends StatelessWidget {
   const GymRankApp({super.key});
@@ -19,6 +21,8 @@ class GymRankApp extends StatelessWidget {
         LoginScreen.routeName: (_) => const LoginScreen(),
         RegisterScreen.routeName: (_) => const RegisterScreen(),
         ProfileSetupScreen.routeName: (_) => const ProfileSetupScreen(),
+        ExerciseLibraryScreen.routeName: (_) => const ExerciseLibraryScreen(),
+        ExerciseDetailScreen.routeName: (_) => const ExerciseDetailScreen(),
       },
       home: const AppShell(),
     );

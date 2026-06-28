@@ -38,3 +38,10 @@ It does not implement workouts, rankings, PRs, overload, analytics, achievements
 - `PATCH /v1/profile`
 
 Ranking eligibility is calculated at profile level only. The `valid_tracked_lift_log` requirement remains unmet until workout logging exists.
+
+## Exercise Endpoints
+
+- `GET /v1/exercises`
+- `GET /v1/exercises/:id`
+
+The exercise API is read-only in Milestone 3 and keeps anatomy exercise-centric.

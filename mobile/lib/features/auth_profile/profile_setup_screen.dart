@@ -24,8 +24,8 @@ class _ProfileSetupSkeleton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const ListView(
-      children: [
+    return ListView(
+      children: const [
         TextField(decoration: InputDecoration(labelText: 'Display name')),
         SizedBox(height: 16),
         TextField(decoration: InputDecoration(labelText: 'Country')),

@@ -60,3 +60,9 @@ Milestone 5 adds:
 - `PersonalRecord`
 
 Personal records belong to users, reference catalog exercises, and point to the workout set that created the record.
+
+## Milestone 6 Progressive Overload
+
+Milestone 6 adds no database tables.
+
+Recommendations are computed dynamically from completed workout sessions and completed sets.

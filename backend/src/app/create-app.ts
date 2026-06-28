@@ -22,12 +22,17 @@ import {
   registerPersonalRecordRoutes,
   type PersonalRecordRouteDependencies
 } from "../modules/personal-records/personal-record.routes.js";
+import {
+  registerOverloadRoutes,
+  type OverloadRouteDependencies
+} from "../modules/overload/overload.routes.js";
 import { errorHandler } from "../shared/errors/error-handler.js";
 
 export type AppDependencies = AuthProfileRouteDependencies &
   ExerciseRouteDependencies &
   WorkoutRouteDependencies &
-  PersonalRecordRouteDependencies;
+  PersonalRecordRouteDependencies &
+  OverloadRouteDependencies;
 
 export function createApp(config: AppConfig, dependencies: AppDependencies = {}): Express {
   const app = express();
@@ -46,6 +51,7 @@ export function createApp(config: AppConfig, dependencies: AppDependencies = {})
   registerExerciseRoutes(app, dependencies);
   registerWorkoutRoutes(app, config, dependencies);
   registerPersonalRecordRoutes(app, config, dependencies);
+  registerOverloadRoutes(app, config, dependencies);
   app.use(errorHandler);
 
   return app;

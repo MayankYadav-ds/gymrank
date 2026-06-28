@@ -72,3 +72,10 @@ Workout logging does not calculate rankings, overload recommendations, analytics
 - `GET /v1/personal-records/:exerciseId`
 
 Personal records are detected when a workout is completed. Only completed sets are eligible. Best set comparison uses highest weight, with reps as the tie-breaker.
+
+## Progressive Overload Endpoints
+
+- `GET /v1/overload/recommendations`
+- `GET /v1/overload/:exerciseId`
+
+Progressive overload recommendations are deterministic, conservative, and based only on completed workout history. No AI or random recommendation logic is used.

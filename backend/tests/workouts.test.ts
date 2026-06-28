@@ -4,6 +4,8 @@ import { beforeEach, describe, expect, it } from "vitest";
 import { createApp } from "../src/app/create-app.js";
 import type { AppConfig } from "../src/config/env.js";
 import { signAuthToken } from "../src/modules/auth-profile/auth-token.js";
+import type { PersonalRecordRepository } from "../src/modules/personal-records/personal-record.repository.js";
+import type { PersonalRecord, PersonalRecordCandidate } from "../src/modules/personal-records/personal-record.types.js";
 import type {
   AddWorkoutExerciseInput,
   AddWorkoutSetInput,
@@ -249,7 +251,10 @@ describe("workout routes", () => {
 });
 
 function app(repository: WorkoutRepository) {
-  return createApp(testConfig, { workoutRepository: repository });
+  return createApp(testConfig, {
+    workoutRepository: repository,
+    personalRecordRepository: new NoopPersonalRecordRepository()
+  });
 }
 
 function authed(requestBuilder: request.Test, authToken: string): request.Test {
@@ -503,5 +508,23 @@ class InMemoryWorkoutRepository implements WorkoutRepository {
 
   private nextId(prefix: string): string {
     return `${prefix}_${this.sequence++}`;
+  }
+}
+
+class NoopPersonalRecordRepository implements PersonalRecordRepository {
+  async findCurrentByUser(_userId: string): Promise<readonly PersonalRecord[]> {
+    return [];
+  }
+
+  async findHistoryByExercise(_userId: string, _exerciseId: string): Promise<readonly PersonalRecord[]> {
+    return [];
+  }
+
+  async findBestForExercise(_userId: string, _exerciseId: string): Promise<PersonalRecord | null> {
+    return null;
+  }
+
+  async createRecords(_candidates: readonly PersonalRecordCandidate[]): Promise<readonly PersonalRecord[]> {
+    return [];
   }
 }

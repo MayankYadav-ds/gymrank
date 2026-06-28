@@ -64,4 +64,11 @@ Exercise data is database-backed as of Milestone 3.5. The seed is idempotent and
 - `PATCH /v1/workouts/:id/sets/:setId`
 - `DELETE /v1/workouts/:id/sets/:setId`
 
-Workout logging does not calculate PRs, rankings, overload recommendations, analytics, or achievements yet.
+Workout logging does not calculate rankings, overload recommendations, analytics, or achievements yet.
+
+## Personal Record Endpoints
+
+- `GET /v1/personal-records`
+- `GET /v1/personal-records/:exerciseId`
+
+Personal records are detected when a workout is completed. Only completed sets are eligible. Best set comparison uses highest weight, with reps as the tie-breaker.

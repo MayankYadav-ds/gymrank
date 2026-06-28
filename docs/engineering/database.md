@@ -52,3 +52,11 @@ Milestone 4 adds:
 - `WorkoutSetType`
 
 Workout sessions belong to users. Workout exercises belong to workout sessions and reference catalog exercises. Workout sets belong to workout exercises.
+
+## Milestone 5 Personal Records
+
+Milestone 5 adds:
+
+- `PersonalRecord`
+
+Personal records belong to users, reference catalog exercises, and point to the workout set that created the record.

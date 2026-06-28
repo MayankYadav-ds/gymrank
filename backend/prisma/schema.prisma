@@ -68,6 +68,7 @@ model User {
   bodyweight                  Decimal?       @db.Decimal(6, 2)
   rankingParticipationEnabled Boolean        @default(false)
   workouts                    WorkoutSession[]
+  personalRecords             PersonalRecord[]
   createdAt                   DateTime       @default(now())
   updatedAt                   DateTime       @updatedAt
 
@@ -95,6 +96,7 @@ model Exercise {
   trackedLiftId String?            @unique
   muscles       ExerciseMuscle[]
   workoutExercises WorkoutExercise[]
+  personalRecords PersonalRecord[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
 
@@ -164,6 +166,26 @@ model WorkoutSet {
   updatedAt         DateTime       @updatedAt
 
   workoutExercise WorkoutExercise @relation(fields: [workoutExerciseId], references: [id], onDelete: Cascade)
+  personalRecord  PersonalRecord?
 
   @@index([workoutExerciseId, orderIndex])
+}
+
+model PersonalRecord {
+  id               String   @id @default(cuid())
+  userId           String
+  exerciseId       String
+  workoutSessionId String
+  workoutSetId     String   @unique
+  weight           Decimal  @db.Decimal(8, 2)
+  reps             Int
+  achievedAt       DateTime
+  createdAt        DateTime @default(now())
+
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise    Exercise   @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+  workoutSet  WorkoutSet @relation(fields: [workoutSetId], references: [id], onDelete: Cascade)
+
+  @@index([userId, exerciseId, achievedAt])
+  @@index([userId, achievedAt])
 }

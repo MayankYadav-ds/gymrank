@@ -1,0 +1,42 @@
+# Database Notes
+
+## Milestone 2 Auth/Profile
+
+Milestone 2 introduced:
+
+- `User`
+- `UnitPreference`
+- `SexCategory`
+
+## Milestone 3 Exercise/Muscle Catalog
+
+Milestone 3 introduced:
+
+- `Exercise`
+- `Muscle`
+- `ExerciseMuscle`
+- `ExerciseCategory`
+- `ExerciseDifficulty`
+- `MuscleRegion`
+- `MuscleTargetRole`
+
+## Milestone 3.5 Database-Backed Catalog
+
+Milestone 3.5 converts runtime exercise reads to Prisma/PostgreSQL.
+
+The seed command is:
+
+```bash
+cd backend
+npm run prisma:seed
+```
+
+The seed is idempotent:
+
+- Muscles are upserted by stable IDs
+- Exercises are upserted by stable IDs
+- Exercise-muscle mappings are recreated per exercise with duplicate protection
+
+## Pending Runtime Verification
+
+Real PostgreSQL migration and seed verification depends on Dockerized PostgreSQL availability.

@@ -2,7 +2,8 @@ import type { Express, Request, Response } from "express";
 
 import { AppError } from "../../shared/errors/app-error.js";
 import { asyncHandler } from "../../shared/http/async-handler.js";
-import { CatalogExerciseRepository, type ExerciseRepository } from "./exercise.repository.js";
+import { prisma } from "../../shared/prisma/client.js";
+import { PrismaExerciseRepository, type ExerciseRepository } from "./exercise.repository.js";
 import { listExercisesQuerySchema } from "./exercise.schemas.js";
 import { ExerciseService } from "./exercise.service.js";
 
@@ -14,7 +15,7 @@ export function registerExerciseRoutes(
   app: Express,
   dependencies: ExerciseRouteDependencies = {}
 ): void {
-  const repository = dependencies.exerciseRepository ?? new CatalogExerciseRepository();
+  const repository = dependencies.exerciseRepository ?? new PrismaExerciseRepository(prisma);
   const service = new ExerciseService(repository);
 
   app.get(

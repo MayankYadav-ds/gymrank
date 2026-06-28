@@ -10,7 +10,9 @@ export class ExerciseService {
   async listExercises(query: ListExercisesQuery): Promise<readonly ExerciseListItem[]> {
     const exercises = await this.repository.list({
       search: query.search,
-      trackedOnly: query.trackedOnly
+      trackedOnly: query.trackedOnly,
+      category: query.category,
+      muscleId: query.muscleId
     });
 
     return exercises.map(toExerciseListItem);

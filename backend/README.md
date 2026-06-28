@@ -10,6 +10,7 @@ npm install
 docker compose up -d
 npm run prisma:generate
 npm run prisma:migrate
+npm run prisma:seed
 npm run dev
 ```
 
@@ -23,6 +24,7 @@ npm run dev
 - `npm run format` - run Prettier
 - `npm run prisma:generate` - generate Prisma client
 - `npm run prisma:migrate` - run local development migrations
+- `npm run prisma:seed` - seed the exercise and muscle catalog
 
 ## Scope Guard
 
@@ -45,3 +47,5 @@ Ranking eligibility is calculated at profile level only. The `valid_tracked_lift
 - `GET /v1/exercises/:id`
 
 The exercise API is read-only in Milestone 3 and keeps anatomy exercise-centric.
+
+Exercise data is database-backed as of Milestone 3.5. The seed is idempotent and can be rerun safely after migrations.

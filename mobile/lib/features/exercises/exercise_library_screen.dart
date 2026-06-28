@@ -2,26 +2,35 @@ import 'package:flutter/material.dart';
 
 import 'exercise_detail_screen.dart';
 import 'exercise_models.dart';
-import 'exercise_sample_catalog.dart';
+import 'exercise_repository.dart';
+import 'exercise_service.dart';
 
 class ExerciseLibraryScreen extends StatelessWidget {
   const ExerciseLibraryScreen({super.key});
 
   static const routeName = '/exercises';
+  static const _service = ExerciseService(MockExerciseRepository());
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: const Text('Exercises')),
       body: SafeArea(
-        child: ListView.separated(
-          padding: const EdgeInsets.all(16),
-          itemBuilder: (context, index) {
-            final exercise = sampleExercises[index];
-            return _ExerciseTile(exercise: exercise);
+        child: FutureBuilder<List<ExerciseSummary>>(
+          future: _service.listExercises(),
+          builder: (context, snapshot) {
+            final exercises = snapshot.data ?? const <ExerciseSummary>[];
+
+            return ListView.separated(
+              padding: const EdgeInsets.all(16),
+              itemBuilder: (context, index) {
+                final exercise = exercises[index];
+                return _ExerciseTile(exercise: exercise);
+              },
+              separatorBuilder: (_, __) => const SizedBox(height: 8),
+              itemCount: exercises.length,
+            );
           },
-          separatorBuilder: (_, __) => const SizedBox(height: 8),
-          itemCount: sampleExercises.length,
         ),
       ),
     );

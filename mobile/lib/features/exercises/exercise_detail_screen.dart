@@ -1,38 +1,52 @@
 import 'package:flutter/material.dart';
 
 import 'exercise_models.dart';
-import 'exercise_sample_catalog.dart';
+import 'exercise_repository.dart';
+import 'exercise_service.dart';
 
 class ExerciseDetailScreen extends StatelessWidget {
   const ExerciseDetailScreen({super.key});
 
   static const routeName = '/exercises/detail';
+  static const _service = ExerciseService(MockExerciseRepository());
 
   @override
   Widget build(BuildContext context) {
     final exerciseId = ModalRoute.of(context)?.settings.arguments as String?;
-    final exercise = findSampleExercise(exerciseId) ?? sampleExercises.first;
 
     return Scaffold(
-      appBar: AppBar(title: Text(exercise.name)),
+      appBar: AppBar(title: const Text('Exercise')),
       body: SafeArea(
-        child: ListView(
-          padding: const EdgeInsets.all(24),
-          children: [
-            _MetadataRow(exercise: exercise),
-            const SizedBox(height: 24),
-            _MuscleSection(
-              title: 'Primary muscles',
-              muscles: exercise.primaryMuscles,
-            ),
-            const SizedBox(height: 16),
-            _MuscleSection(
-              title: 'Secondary muscles',
-              muscles: exercise.secondaryMuscles,
-            ),
-            const SizedBox(height: 24),
-            _AnatomyPlaceholder(exercise: exercise),
-          ],
+        child: FutureBuilder<ExerciseSummary?>(
+          future: exerciseId == null ? Future.value(null) : _service.getExercise(exerciseId),
+          builder: (context, snapshot) {
+            final exercise = snapshot.data;
+
+            if (exercise == null) {
+              return const Center(child: Text('Exercise unavailable'));
+            }
+
+            return ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                Text(exercise.name, style: Theme.of(context).textTheme.headlineLarge),
+                const SizedBox(height: 16),
+                _MetadataRow(exercise: exercise),
+                const SizedBox(height: 24),
+                _MuscleSection(
+                  title: 'Primary muscles',
+                  muscles: exercise.primaryMuscles,
+                ),
+                const SizedBox(height: 16),
+                _MuscleSection(
+                  title: 'Secondary muscles',
+                  muscles: exercise.secondaryMuscles,
+                ),
+                const SizedBox(height: 24),
+                _AnatomyPlaceholder(exercise: exercise),
+              ],
+            );
+          },
         ),
       ),
     );

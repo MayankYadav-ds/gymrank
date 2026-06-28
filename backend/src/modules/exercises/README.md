@@ -22,3 +22,13 @@ Optional query parameters:
 ## Scope Guard
 
 This module does not implement workout logging, PRs, overload recommendations, rankings, analytics, achievements, community, or a full interactive anatomy explorer.
+
+## Data Source
+
+Runtime exercise reads use the Prisma-backed repository.
+
+Seed data lives under `backend/prisma/seed-data/` and is loaded with:
+
+```bash
+npm run prisma:seed
+```

@@ -5,6 +5,8 @@ import { requireAuth } from "../auth-profile/auth.middleware.js";
 import { AppError } from "../../shared/errors/app-error.js";
 import { asyncHandler } from "../../shared/http/async-handler.js";
 import { prisma } from "../../shared/prisma/client.js";
+import { PrismaRankingRepository, type RankingRepository } from "../rankings/ranking.repository.js";
+import { RankingService } from "../rankings/ranking.service.js";
 import {
   PrismaPersonalRecordRepository,
   type PersonalRecordRepository
@@ -13,6 +15,7 @@ import { PersonalRecordService } from "./personal-record.service.js";
 
 export type PersonalRecordRouteDependencies = {
   personalRecordRepository?: PersonalRecordRepository;
+  rankingRepository?: RankingRepository;
 };
 
 export function registerPersonalRecordRoutes(
@@ -21,7 +24,8 @@ export function registerPersonalRecordRoutes(
   dependencies: PersonalRecordRouteDependencies = {}
 ): void {
   const repository = dependencies.personalRecordRepository ?? new PrismaPersonalRecordRepository(prisma);
-  const service = new PersonalRecordService(repository);
+  const rankingRepository = dependencies.rankingRepository ?? new PrismaRankingRepository(prisma);
+  const service = new PersonalRecordService(repository, new RankingService(rankingRepository));
   const auth = requireAuth(config);
 
   app.get(

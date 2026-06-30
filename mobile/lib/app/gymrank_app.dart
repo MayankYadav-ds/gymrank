@@ -14,6 +14,9 @@ import '../features/workouts/workout_detail_screen.dart';
 import '../features/workouts/workout_history_screen.dart';
 import '../features/overload/recommendation_detail_screen.dart';
 import '../features/overload/recommendations_screen.dart';
+import '../features/rankings/exercise_leaderboard_screen.dart';
+import '../features/rankings/leaderboard_screen.dart';
+import '../features/rankings/my_rank_screen.dart';
 
 class GymRankApp extends StatelessWidget {
   const GymRankApp({super.key});
@@ -37,6 +40,9 @@ class GymRankApp extends StatelessWidget {
         AddSetScreen.routeName: (_) => const AddSetScreen(),
         RecommendationsScreen.routeName: (_) => const RecommendationsScreen(),
         RecommendationDetailScreen.routeName: (_) => const RecommendationDetailScreen(),
+        LeaderboardScreen.routeName: (_) => const LeaderboardScreen(),
+        ExerciseLeaderboardScreen.routeName: (_) => const ExerciseLeaderboardScreen(),
+        MyRankScreen.routeName: (_) => const MyRankScreen(),
       },
       home: const AppShell(),
     );

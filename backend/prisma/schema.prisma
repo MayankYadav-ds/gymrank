@@ -69,6 +69,7 @@ model User {
   rankingParticipationEnabled Boolean        @default(false)
   workouts                    WorkoutSession[]
   personalRecords             PersonalRecord[]
+  rankingSnapshots            RankingSnapshot[]
   createdAt                   DateTime       @default(now())
   updatedAt                   DateTime       @updatedAt
 
@@ -97,6 +98,7 @@ model Exercise {
   muscles       ExerciseMuscle[]
   workoutExercises WorkoutExercise[]
   personalRecords PersonalRecord[]
+  rankingSnapshots RankingSnapshot[]
   createdAt     DateTime           @default(now())
   updatedAt     DateTime           @updatedAt
 
@@ -188,4 +190,24 @@ model PersonalRecord {
 
   @@index([userId, exerciseId, achievedAt])
   @@index([userId, achievedAt])
+}
+
+model RankingSnapshot {
+  id          String   @id @default(cuid())
+  userId      String
+  exerciseId  String
+  bestWeight  Decimal  @db.Decimal(8, 2)
+  bestReps    Int
+  currentRank Int
+  percentile  Decimal  @db.Decimal(5, 2)
+  achievedAt  DateTime
+  updatedAt   DateTime @updatedAt
+
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  exercise Exercise @relation(fields: [exerciseId], references: [id], onDelete: Restrict)
+
+  @@unique([userId, exerciseId])
+  @@index([exerciseId, currentRank])
+  @@index([exerciseId, bestWeight, bestReps, achievedAt])
+  @@index([userId])
 }

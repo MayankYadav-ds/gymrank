@@ -66,3 +66,11 @@ Personal records belong to users, reference catalog exercises, and point to the 
 Milestone 6 adds no database tables.
 
 Recommendations are computed dynamically from completed workout sessions and completed sets.
+
+## Milestone 7 Lift-Based Rankings
+
+Milestone 7 adds:
+
+- `RankingSnapshot`
+
+Ranking snapshots are derived from Personal Records only and optimized for leaderboard reads.

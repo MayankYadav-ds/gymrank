@@ -79,3 +79,12 @@ Personal records are detected when a workout is completed. Only completed sets a
 - `GET /v1/overload/:exerciseId`
 
 Progressive overload recommendations are deterministic, conservative, and based only on completed workout history. No AI or random recommendation logic is used.
+
+## Ranking Endpoints
+
+- `GET /v1/rankings`
+- `GET /v1/rankings/:exerciseId`
+- `GET /v1/rankings/me`
+- `GET /v1/rankings/me/:exerciseId`
+
+Rankings use Personal Records only. Social engagement, popularity, followers, likes, and activity do not affect rank.

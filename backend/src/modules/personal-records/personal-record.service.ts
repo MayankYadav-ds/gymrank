@@ -1,9 +1,13 @@
 import type { WorkoutSession, WorkoutSet } from "../workouts/workout.types.js";
+import type { RankingService } from "../rankings/ranking.service.js";
 import type { PersonalRecordRepository } from "./personal-record.repository.js";
 import type { PersonalRecord, PersonalRecordCandidate } from "./personal-record.types.js";
 
 export class PersonalRecordService {
-  constructor(private readonly repository: PersonalRecordRepository) {}
+  constructor(
+    private readonly repository: PersonalRecordRepository,
+    private readonly rankingService?: RankingService
+  ) {}
 
   findCurrentByUser(userId: string): Promise<readonly PersonalRecord[]> {
     return this.repository.findCurrentByUser(userId);
@@ -44,7 +48,9 @@ export class PersonalRecordService {
       });
     }
 
-    return this.repository.createRecords(candidates);
+    const records = await this.repository.createRecords(candidates);
+    await this.rankingService?.updateFromPersonalRecords(records);
+    return records;
   }
 }
 

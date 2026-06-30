@@ -26,13 +26,18 @@ import {
   registerOverloadRoutes,
   type OverloadRouteDependencies
 } from "../modules/overload/overload.routes.js";
+import {
+  registerRankingRoutes,
+  type RankingRouteDependencies
+} from "../modules/rankings/ranking.routes.js";
 import { errorHandler } from "../shared/errors/error-handler.js";
 
 export type AppDependencies = AuthProfileRouteDependencies &
   ExerciseRouteDependencies &
   WorkoutRouteDependencies &
   PersonalRecordRouteDependencies &
-  OverloadRouteDependencies;
+  OverloadRouteDependencies &
+  RankingRouteDependencies;
 
 export function createApp(config: AppConfig, dependencies: AppDependencies = {}): Express {
   const app = express();
@@ -52,6 +57,7 @@ export function createApp(config: AppConfig, dependencies: AppDependencies = {})
   registerWorkoutRoutes(app, config, dependencies);
   registerPersonalRecordRoutes(app, config, dependencies);
   registerOverloadRoutes(app, config, dependencies);
+  registerRankingRoutes(app, config, dependencies);
   app.use(errorHandler);
 
   return app;

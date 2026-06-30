@@ -7,6 +7,8 @@ import {
   type PersonalRecordRepository
 } from "../personal-records/personal-record.repository.js";
 import { PersonalRecordService } from "../personal-records/personal-record.service.js";
+import { PrismaRankingRepository, type RankingRepository } from "../rankings/ranking.repository.js";
+import { RankingService } from "../rankings/ranking.service.js";
 import { AppError } from "../../shared/errors/app-error.js";
 import { asyncHandler } from "../../shared/http/async-handler.js";
 import { prisma } from "../../shared/prisma/client.js";
@@ -25,6 +27,7 @@ import { WorkoutService } from "./workout.service.js";
 export type WorkoutRouteDependencies = {
   workoutRepository?: WorkoutRepository;
   personalRecordRepository?: PersonalRecordRepository;
+  rankingRepository?: RankingRepository;
 };
 
 export function registerWorkoutRoutes(
@@ -35,7 +38,11 @@ export function registerWorkoutRoutes(
   const repository = dependencies.workoutRepository ?? new PrismaWorkoutRepository(prisma);
   const personalRecordRepository =
     dependencies.personalRecordRepository ?? new PrismaPersonalRecordRepository(prisma);
-  const service = new WorkoutService(repository, new PersonalRecordService(personalRecordRepository));
+  const rankingRepository = dependencies.rankingRepository ?? new PrismaRankingRepository(prisma);
+  const service = new WorkoutService(
+    repository,
+    new PersonalRecordService(personalRecordRepository, new RankingService(rankingRepository))
+  );
   const auth = requireAuth(config);
 
   app.post(

@@ -5,6 +5,12 @@ import 'theme/gymrank_theme.dart';
 import '../features/auth_profile/login_screen.dart';
 import '../features/auth_profile/profile_setup_screen.dart';
 import '../features/auth_profile/register_screen.dart';
+import '../features/analytics/analytics_dashboard_screen.dart';
+import '../features/analytics/bodyweight_screen.dart';
+import '../features/analytics/consistency_screen.dart';
+import '../features/analytics/muscle_distribution_screen.dart';
+import '../features/analytics/strength_progress_screen.dart';
+import '../features/analytics/volume_screen.dart';
 import '../features/exercises/exercise_detail_screen.dart';
 import '../features/exercises/exercise_library_screen.dart';
 import '../features/workouts/add_set_screen.dart';
@@ -31,6 +37,12 @@ class GymRankApp extends StatelessWidget {
         LoginScreen.routeName: (_) => const LoginScreen(),
         RegisterScreen.routeName: (_) => const RegisterScreen(),
         ProfileSetupScreen.routeName: (_) => const ProfileSetupScreen(),
+        AnalyticsDashboardScreen.routeName: (_) => const AnalyticsDashboardScreen(),
+        StrengthProgressScreen.routeName: (_) => const StrengthProgressScreen(),
+        VolumeScreen.routeName: (_) => const VolumeScreen(),
+        ConsistencyScreen.routeName: (_) => const ConsistencyScreen(),
+        BodyweightScreen.routeName: (_) => const BodyweightScreen(),
+        MuscleDistributionScreen.routeName: (_) => const MuscleDistributionScreen(),
         ExerciseLibraryScreen.routeName: (_) => const ExerciseLibraryScreen(),
         ExerciseDetailScreen.routeName: (_) => const ExerciseDetailScreen(),
         WorkoutHistoryScreen.routeName: (_) => const WorkoutHistoryScreen(),

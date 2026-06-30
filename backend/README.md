@@ -88,3 +88,14 @@ Progressive overload recommendations are deterministic, conservative, and based 
 - `GET /v1/rankings/me/:exerciseId`
 
 Rankings use Personal Records only. Social engagement, popularity, followers, likes, and activity do not affect rank.
+
+## Analytics Endpoints
+
+- `GET /v1/analytics/dashboard`
+- `GET /v1/analytics/strength`
+- `GET /v1/analytics/volume`
+- `GET /v1/analytics/consistency`
+- `GET /v1/analytics/bodyweight`
+- `GET /v1/analytics/muscles`
+
+Analytics are read-only and computed from completed workouts, personal records, profile bodyweight, and exercise muscle mappings. Milestone 8 does not add analytics tables.

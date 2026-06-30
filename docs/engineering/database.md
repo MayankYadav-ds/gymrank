@@ -74,3 +74,19 @@ Milestone 7 adds:
 - `RankingSnapshot`
 
 Ranking snapshots are derived from Personal Records only and optimized for leaderboard reads.
+
+## Milestone 8 Analytics Dashboard
+
+Milestone 8 adds no database tables.
+
+Analytics are computed dynamically from:
+
+- `WorkoutSession`
+- `WorkoutExercise`
+- `WorkoutSet`
+- `PersonalRecord`
+- `User.bodyweight`
+- `ExerciseMuscle`
+- `Muscle`
+
+Bodyweight analytics are limited to the current profile bodyweight until a dedicated bodyweight history model is approved in a future milestone.

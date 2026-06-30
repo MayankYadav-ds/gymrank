@@ -30,6 +30,10 @@ import {
   registerRankingRoutes,
   type RankingRouteDependencies
 } from "../modules/rankings/ranking.routes.js";
+import {
+  registerAnalyticsRoutes,
+  type AnalyticsRouteDependencies
+} from "../modules/analytics/analytics.routes.js";
 import { errorHandler } from "../shared/errors/error-handler.js";
 
 export type AppDependencies = AuthProfileRouteDependencies &
@@ -37,7 +41,8 @@ export type AppDependencies = AuthProfileRouteDependencies &
   WorkoutRouteDependencies &
   PersonalRecordRouteDependencies &
   OverloadRouteDependencies &
-  RankingRouteDependencies;
+  RankingRouteDependencies &
+  AnalyticsRouteDependencies;
 
 export function createApp(config: AppConfig, dependencies: AppDependencies = {}): Express {
   const app = express();
@@ -58,6 +63,7 @@ export function createApp(config: AppConfig, dependencies: AppDependencies = {})
   registerPersonalRecordRoutes(app, config, dependencies);
   registerOverloadRoutes(app, config, dependencies);
   registerRankingRoutes(app, config, dependencies);
+  registerAnalyticsRoutes(app, config, dependencies);
   app.use(errorHandler);
 
   return app;

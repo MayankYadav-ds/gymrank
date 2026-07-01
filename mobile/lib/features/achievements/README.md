@@ -1,11 +1,13 @@
 # Achievements Feature
 
-Placeholder for a later approved milestone.
+Milestone 9 adds the mobile achievements skeleton for GymRank V1.
 
 V1 responsibilities:
 
-- First workout
-- First PR
-- Consistency streaks
-- Lift milestones
-- Workout count milestones
+- Achievements screen
+- Achievement card
+- Achievement detail screen
+- Unlocked celebration dialog
+- Profile achievement section
+
+The mobile feature uses a repository/service abstraction with temporary mock data until authenticated API wiring is added.

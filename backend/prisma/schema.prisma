@@ -70,6 +70,7 @@ model User {
   workouts                    WorkoutSession[]
   personalRecords             PersonalRecord[]
   rankingSnapshots            RankingSnapshot[]
+  achievements                 UserAchievement[]
   createdAt                   DateTime       @default(now())
   updatedAt                   DateTime       @updatedAt
 
@@ -210,4 +211,34 @@ model RankingSnapshot {
   @@index([exerciseId, currentRank])
   @@index([exerciseId, bestWeight, bestReps, achievedAt])
   @@index([userId])
+}
+
+model Achievement {
+  id               String            @id
+  code             String            @unique
+  title            String
+  description      String
+  category         String
+  icon             String
+  rarity           String
+  hidden           Boolean           @default(false)
+  userAchievements UserAchievement[]
+  createdAt        DateTime          @default(now())
+
+  @@index([category])
+  @@index([rarity])
+}
+
+model UserAchievement {
+  id            String      @id @default(cuid())
+  userId        String
+  achievementId String
+  unlockedAt    DateTime    @default(now())
+
+  user        User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  achievement Achievement @relation(fields: [achievementId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, achievementId])
+  @@index([userId])
+  @@index([achievementId])
 }

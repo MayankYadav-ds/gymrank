@@ -34,6 +34,10 @@ import {
   registerAnalyticsRoutes,
   type AnalyticsRouteDependencies
 } from "../modules/analytics/analytics.routes.js";
+import {
+  registerAchievementRoutes,
+  type AchievementRouteDependencies
+} from "../modules/achievements/achievement.routes.js";
 import { errorHandler } from "../shared/errors/error-handler.js";
 
 export type AppDependencies = AuthProfileRouteDependencies &
@@ -42,7 +46,8 @@ export type AppDependencies = AuthProfileRouteDependencies &
   PersonalRecordRouteDependencies &
   OverloadRouteDependencies &
   RankingRouteDependencies &
-  AnalyticsRouteDependencies;
+  AnalyticsRouteDependencies &
+  AchievementRouteDependencies;
 
 export function createApp(config: AppConfig, dependencies: AppDependencies = {}): Express {
   const app = express();
@@ -64,6 +69,7 @@ export function createApp(config: AppConfig, dependencies: AppDependencies = {})
   registerOverloadRoutes(app, config, dependencies);
   registerRankingRoutes(app, config, dependencies);
   registerAnalyticsRoutes(app, config, dependencies);
+  registerAchievementRoutes(app, config, dependencies);
   app.use(errorHandler);
 
   return app;

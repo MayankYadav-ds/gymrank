@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 
 import 'navigation/app_shell.dart';
 import 'theme/gymrank_theme.dart';
+import '../features/achievements/achievement_detail_screen.dart';
+import '../features/achievements/achievements_screen.dart';
 import '../features/auth_profile/login_screen.dart';
 import '../features/auth_profile/profile_setup_screen.dart';
 import '../features/auth_profile/register_screen.dart';
@@ -37,6 +39,8 @@ class GymRankApp extends StatelessWidget {
         LoginScreen.routeName: (_) => const LoginScreen(),
         RegisterScreen.routeName: (_) => const RegisterScreen(),
         ProfileSetupScreen.routeName: (_) => const ProfileSetupScreen(),
+        AchievementsScreen.routeName: (_) => const AchievementsScreen(),
+        AchievementDetailScreen.routeName: (_) => const AchievementDetailScreen(),
         AnalyticsDashboardScreen.routeName: (_) => const AnalyticsDashboardScreen(),
         StrengthProgressScreen.routeName: (_) => const StrengthProgressScreen(),
         VolumeScreen.routeName: (_) => const VolumeScreen(),

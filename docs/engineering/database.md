@@ -90,3 +90,14 @@ Analytics are computed dynamically from:
 - `Muscle`
 
 Bodyweight analytics are limited to the current profile bodyweight until a dedicated bodyweight history model is approved in a future milestone.
+
+## Milestone 9 Achievements
+
+Milestone 9 adds:
+
+- `Achievement`
+- `UserAchievement`
+
+`Achievement` stores the deterministic catalog. `UserAchievement` stores permanent user unlocks and enforces one unlock per user/achievement through a unique constraint.
+
+The seed command now upserts the achievement catalog together with the exercise catalog.

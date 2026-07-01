@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+import '../../features/achievements/achievements_screen.dart';
 import '../../features/analytics/analytics_dashboard_screen.dart';
 import '../../features/auth_profile/login_screen.dart';
 import '../../features/auth_profile/profile_setup_screen.dart';
@@ -84,6 +85,10 @@ class _FoundationView extends StatelessWidget {
             TextButton(
               onPressed: () => Navigator.of(context).pushNamed(AnalyticsDashboardScreen.routeName),
               child: const Text('Analytics'),
+            ),
+            TextButton(
+              onPressed: () => Navigator.of(context).pushNamed(AchievementsScreen.routeName),
+              child: const Text('Achievements'),
             ),
           ],
         ),

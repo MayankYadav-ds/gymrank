@@ -99,3 +99,12 @@ Rankings use Personal Records only. Social engagement, popularity, followers, li
 - `GET /v1/analytics/muscles`
 
 Analytics are read-only and computed from completed workouts, personal records, profile bodyweight, and exercise muscle mappings. Milestone 8 does not add analytics tables.
+
+## Achievement Endpoints
+
+- `GET /v1/achievements`
+- `GET /v1/achievements/unlocked`
+- `GET /v1/achievements/progress`
+- `GET /v1/achievements/:id`
+
+Achievements are deterministic, idempotent, and based only on completed workouts, personal records, training volume, approved tracked lifts, and current rankings.

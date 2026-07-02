@@ -1,4 +1,5 @@
 import 'ranking_models.dart';
+import '../../core/api/api_client.dart';
 
 abstract class RankingRepository {
   Future<List<RankingEntrySummary>> findLeaderboard(String exerciseId);
@@ -6,35 +7,34 @@ abstract class RankingRepository {
   Future<List<RankingEntrySummary>> findMyRanks();
 }
 
-class MockRankingRepository implements RankingRepository {
-  const MockRankingRepository();
+class ApiRankingRepository implements RankingRepository {
+  const ApiRankingRepository({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient.shared;
+
+  final ApiClient _apiClient;
 
   @override
   Future<List<RankingEntrySummary>> findLeaderboard(String exerciseId) async {
-    return sampleRankings;
+    final json = await _apiClient.getJson('/v1/rankings/$exerciseId');
+    final leaderboard = json['leaderboard'];
+    final entries = leaderboard is Map<String, dynamic> ? leaderboard['entries'] : null;
+
+    if (entries is! List) {
+      return [];
+    }
+
+    return entries.whereType<Map<String, dynamic>>().map(RankingEntrySummary.fromJson).toList();
   }
 
   @override
   Future<List<RankingEntrySummary>> findMyRanks() async {
-    return sampleRankings.take(1).toList();
+    final json = await _apiClient.getJson('/v1/rankings/me');
+    final rankings = json['rankings'];
+    final exerciseRanks = rankings is Map<String, dynamic> ? rankings['exerciseRanks'] : null;
+
+    if (exerciseRanks is! List) {
+      return [];
+    }
+
+    return exerciseRanks.whereType<Map<String, dynamic>>().map(RankingEntrySummary.fromJson).toList();
   }
 }
-
-const sampleRankings = <RankingEntrySummary>[
-  RankingEntrySummary(
-    rank: 1,
-    displayName: 'Top Lifter',
-    exerciseName: 'Bench Press',
-    bestWeight: 140,
-    bestReps: 3,
-    percentile: 100,
-  ),
-  RankingEntrySummary(
-    rank: 2,
-    displayName: 'You',
-    exerciseName: 'Bench Press',
-    bestWeight: 120,
-    bestReps: 5,
-    percentile: 90,
-  ),
-];

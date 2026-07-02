@@ -1,4 +1,5 @@
 import 'achievement_models.dart';
+import '../../core/api/api_client.dart';
 
 abstract class AchievementRepository {
   Future<List<AchievementSummary>> findAchievements();
@@ -6,52 +7,26 @@ abstract class AchievementRepository {
   Future<AchievementSummary> findAchievement(String id);
 }
 
-class MockAchievementRepository implements AchievementRepository {
-  const MockAchievementRepository();
+class ApiAchievementRepository implements AchievementRepository {
+  const ApiAchievementRepository({ApiClient? apiClient}) : _apiClient = apiClient ?? ApiClient.shared;
+
+  final ApiClient _apiClient;
 
   @override
   Future<List<AchievementSummary>> findAchievements() async {
-    return sampleAchievements;
+    final json = await _apiClient.getJson('/v1/achievements/progress');
+    final progress = json['progress'];
+
+    if (progress is! List) {
+      return [];
+    }
+
+    return progress.whereType<Map<String, dynamic>>().map(AchievementSummary.fromProgressJson).toList();
   }
 
   @override
   Future<AchievementSummary> findAchievement(String id) async {
-    return sampleAchievements.firstWhere(
-      (achievement) => achievement.id == id,
-      orElse: () => sampleAchievements.first,
-    );
+    final json = await _apiClient.getJson('/v1/achievements/$id');
+    return AchievementSummary.fromProgressJson(json['achievement'] as Map<String, dynamic>);
   }
 }
-
-const sampleAchievements = <AchievementSummary>[
-  AchievementSummary(
-    id: 'first_workout',
-    title: 'First Workout',
-    description: 'Complete your first workout.',
-    category: 'Workout',
-    icon: 'fitness_center',
-    rarity: 'Common',
-    unlocked: true,
-    progressPercent: 100,
-  ),
-  AchievementSummary(
-    id: 'bench_100kg',
-    title: '100 kg Bench',
-    description: 'Bench press 100 kg.',
-    category: 'Strength',
-    icon: 'bolt',
-    rarity: 'Rare',
-    unlocked: true,
-    progressPercent: 100,
-  ),
-  AchievementSummary(
-    id: 'streak_7',
-    title: '7-Day Streak',
-    description: 'Train on 7 consecutive days.',
-    category: 'Consistency',
-    icon: 'local_fire_department',
-    rarity: 'Uncommon',
-    unlocked: false,
-    progressPercent: 71,
-  ),
-];

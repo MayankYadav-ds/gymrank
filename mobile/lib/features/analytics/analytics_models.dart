@@ -54,10 +54,10 @@ class BodyweightSummary {
     required this.average,
   });
 
-  final double current;
-  final double highest;
-  final double lowest;
-  final double average;
+  final double? current;
+  final double? highest;
+  final double? lowest;
+  final double? average;
 }
 
 class MuscleDistributionPoint {

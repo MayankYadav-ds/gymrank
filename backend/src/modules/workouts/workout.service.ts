@@ -1,4 +1,5 @@
 import { AppError } from "../../shared/errors/app-error.js";
+import type { AchievementService } from "../achievements/achievement.service.js";
 import type { PersonalRecordService } from "../personal-records/personal-record.service.js";
 import type {
   AddWorkoutExerciseInput,
@@ -14,7 +15,8 @@ import type { WorkoutHistoryItem, WorkoutSession } from "./workout.types.js";
 export class WorkoutService {
   constructor(
     private readonly repository: WorkoutRepository,
-    private readonly personalRecordService?: PersonalRecordService
+    private readonly personalRecordService?: PersonalRecordService,
+    private readonly achievementService?: AchievementService
   ) {}
 
   createWorkout(userId: string, input: CreateWorkoutInput): Promise<WorkoutSession> {
@@ -52,6 +54,7 @@ export class WorkoutService {
 
     const completedWorkout = await this.repository.finishWorkout(userId, workoutId);
     await this.personalRecordService?.detectForCompletedWorkout(completedWorkout);
+    await this.achievementService?.ensureDefinitionsAndUnlock(userId);
     return completedWorkout;
   }
 

@@ -44,27 +44,27 @@ class AnalyticsDashboardScreen extends StatelessWidget {
                   },
                 ),
                 const SizedBox(height: 20),
-                _AnalyticsNavTile(
+                const _AnalyticsNavTile(
                   title: 'Strength Progress',
                   icon: Icons.trending_up,
                   routeName: StrengthProgressScreen.routeName,
                 ),
-                _AnalyticsNavTile(
+                const _AnalyticsNavTile(
                   title: 'Volume',
                   icon: Icons.bar_chart,
                   routeName: VolumeScreen.routeName,
                 ),
-                _AnalyticsNavTile(
+                const _AnalyticsNavTile(
                   title: 'Consistency',
                   icon: Icons.calendar_month,
                   routeName: ConsistencyScreen.routeName,
                 ),
-                _AnalyticsNavTile(
+                const _AnalyticsNavTile(
                   title: 'Bodyweight',
                   icon: Icons.monitor_weight,
                   routeName: BodyweightScreen.routeName,
                 ),
-                _AnalyticsNavTile(
+                const _AnalyticsNavTile(
                   title: 'Muscle Distribution',
                   icon: Icons.pie_chart,
                   routeName: MuscleDistributionScreen.routeName,

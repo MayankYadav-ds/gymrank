@@ -3,6 +3,13 @@ import { beforeEach, describe, expect, it } from "vitest";
 
 import { createApp } from "../src/app/create-app.js";
 import type { AppConfig } from "../src/config/env.js";
+import type { AchievementRepository } from "../src/modules/achievements/achievement.repository.js";
+import type {
+  Achievement,
+  AchievementDefinition,
+  AchievementEvaluationSource,
+  UserAchievement
+} from "../src/modules/achievements/achievement.types.js";
 import { signAuthToken } from "../src/modules/auth-profile/auth-token.js";
 import type { PersonalRecordRepository } from "../src/modules/personal-records/personal-record.repository.js";
 import type { PersonalRecord, PersonalRecordCandidate } from "../src/modules/personal-records/personal-record.types.js";
@@ -143,6 +150,21 @@ describe("workout routes", () => {
     expect(response.body.workout.finishedAt).toEqual(expect.any(String));
   });
 
+  it("unlocks achievements automatically after finishing a workout", async () => {
+    const achievementRepository = new InMemoryAchievementRepository({ workoutCount: 1 });
+    const workout = await createWorkoutWithExercise(repository, token, achievementRepository);
+
+    const response = await authed(
+      request(app(repository, achievementRepository)).patch(`/v1/workouts/${workout.id}`),
+      token
+    ).send({
+      status: "completed"
+    });
+
+    expect(response.status).toBe(200);
+    expect(achievementRepository.unlockedCodes("user_1")).toContain("first_workout");
+  });
+
   it("cancels a workout", async () => {
     const workout = await createWorkout(repository, token);
 
@@ -250,10 +272,14 @@ describe("workout routes", () => {
   });
 });
 
-function app(repository: WorkoutRepository) {
+function app(
+  repository: WorkoutRepository,
+  achievementRepository: AchievementRepository = new InMemoryAchievementRepository({})
+) {
   return createApp(testConfig, {
     workoutRepository: repository,
-    personalRecordRepository: new NoopPersonalRecordRepository()
+    personalRecordRepository: new NoopPersonalRecordRepository(),
+    achievementRepository
   });
 }
 
@@ -261,19 +287,25 @@ function authed(requestBuilder: request.Test, authToken: string): request.Test {
   return requestBuilder.set("Authorization", `Bearer ${authToken}`);
 }
 
-async function createWorkout(repository: InMemoryWorkoutRepository, authToken: string): Promise<WorkoutSession> {
-  const response = await authed(request(app(repository)).post("/v1/workouts"), authToken).send({});
+async function createWorkout(
+  repository: InMemoryWorkoutRepository,
+  authToken: string,
+  achievementRepository?: AchievementRepository
+): Promise<WorkoutSession> {
+  const response = await authed(request(app(repository, achievementRepository)).post("/v1/workouts"), authToken).send({});
   return response.body.workout as WorkoutSession;
 }
 
 async function createWorkoutWithExercise(
   repository: InMemoryWorkoutRepository,
-  authToken: string
+  authToken: string,
+  achievementRepository?: AchievementRepository
 ): Promise<WorkoutSession> {
-  const workout = await createWorkout(repository, authToken);
-  const response = await authed(request(app(repository)).post(`/v1/workouts/${workout.id}/exercises`), authToken).send({
-    exerciseId: "bench_press"
-  });
+  const workout = await createWorkout(repository, authToken, achievementRepository);
+  const response = await authed(
+    request(app(repository, achievementRepository)).post(`/v1/workouts/${workout.id}/exercises`),
+    authToken
+  ).send({ exerciseId: "bench_press" });
   return response.body.workout as WorkoutSession;
 }
 
@@ -526,5 +558,76 @@ class NoopPersonalRecordRepository implements PersonalRecordRepository {
 
   async createRecords(_candidates: readonly PersonalRecordCandidate[]): Promise<readonly PersonalRecord[]> {
     return [];
+  }
+}
+
+class InMemoryAchievementRepository implements AchievementRepository {
+  private achievements = new Map<string, Achievement>();
+  private unlocked = new Map<string, UserAchievement>();
+
+  constructor(private readonly source: Partial<AchievementEvaluationSource>) {}
+
+  async ensureDefinitions(definitions: readonly AchievementDefinition[]): Promise<void> {
+    for (const definition of definitions) {
+      this.achievements.set(definition.id, {
+        id: definition.id,
+        code: definition.code,
+        title: definition.title,
+        description: definition.description,
+        category: definition.category,
+        icon: definition.icon,
+        rarity: definition.rarity,
+        hidden: definition.hidden,
+        createdAt: "2026-01-01T00:00:00.000Z"
+      });
+    }
+  }
+
+  async findAll(): Promise<readonly Achievement[]> {
+    return [...this.achievements.values()];
+  }
+
+  async findById(id: string): Promise<Achievement | null> {
+    return this.achievements.get(id) ?? null;
+  }
+
+  async findUnlockedByUser(userId: string): Promise<readonly UserAchievement[]> {
+    return [...this.unlocked.values()].filter((item) => item.userId === userId);
+  }
+
+  async unlockMany(userId: string, achievementIds: readonly string[]): Promise<readonly UserAchievement[]> {
+    for (const achievementId of achievementIds) {
+      const key = `${userId}:${achievementId}`;
+
+      if (!this.unlocked.has(key)) {
+        this.unlocked.set(key, {
+          id: key,
+          userId,
+          achievementId,
+          unlockedAt: "2026-01-01T00:00:00.000Z",
+          achievement: this.achievements.get(achievementId)!
+        });
+      }
+    }
+
+    return this.findUnlockedByUser(userId);
+  }
+
+  async getEvaluationSource(_userId: string): Promise<AchievementEvaluationSource> {
+    return {
+      workoutCount: 0,
+      workoutDates: [],
+      prCount: 0,
+      totalVolume: 0,
+      personalRecords: [],
+      rankings: [],
+      ...this.source
+    };
+  }
+
+  unlockedCodes(userId: string): readonly string[] {
+    return [...this.unlocked.values()]
+      .filter((item) => item.userId === userId)
+      .map((item) => item.achievement.code);
   }
 }

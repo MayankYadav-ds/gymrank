@@ -1,50 +1,60 @@
 import 'package:flutter/material.dart';
 
+import '../../shared/widgets/async_state_view.dart';
 import 'exercise_models.dart';
 import 'exercise_repository.dart';
 import 'exercise_service.dart';
 
-class ExerciseDetailScreen extends StatelessWidget {
+class ExerciseDetailScreen extends StatefulWidget {
   const ExerciseDetailScreen({super.key});
 
   static const routeName = '/exercises/detail';
-  static const _service = ExerciseService(MockExerciseRepository());
+
+  @override
+  State<ExerciseDetailScreen> createState() => _ExerciseDetailScreenState();
+}
+
+class _ExerciseDetailScreenState extends State<ExerciseDetailScreen> {
+  static const _service = ExerciseService(ApiExerciseRepository());
+  Future<ExerciseSummary?>? _future;
 
   @override
   Widget build(BuildContext context) {
     final exerciseId = ModalRoute.of(context)?.settings.arguments as String?;
+    _future ??= exerciseId == null ? Future.value(null) : _service.getExercise(exerciseId);
 
     return Scaffold(
       appBar: AppBar(title: const Text('Exercise')),
       body: SafeArea(
         child: FutureBuilder<ExerciseSummary?>(
-          future: exerciseId == null ? Future.value(null) : _service.getExercise(exerciseId),
+          future: _future,
           builder: (context, snapshot) {
-            final exercise = snapshot.data;
-
-            if (exercise == null) {
-              return const Center(child: Text('Exercise unavailable'));
-            }
-
-            return ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                Text(exercise.name, style: Theme.of(context).textTheme.headlineLarge),
-                const SizedBox(height: 16),
-                _MetadataRow(exercise: exercise),
-                const SizedBox(height: 24),
-                _MuscleSection(
-                  title: 'Primary muscles',
-                  muscles: exercise.primaryMuscles,
+            return AsyncStateView<ExerciseSummary?>(
+              snapshot: snapshot,
+              emptyMessage: 'Exercise unavailable.',
+              isEmpty: (exercise) => exercise == null,
+              onRetry: () => setState(() {
+                _future = exerciseId == null ? Future.value(null) : _service.getExercise(exerciseId);
+              }),
+              builder: (context, exercise) => RefreshIndicator(
+                onRefresh: () async => setState(() {
+                  _future = exerciseId == null ? Future.value(null) : _service.getExercise(exerciseId);
+                }),
+                child: ListView(
+                  padding: const EdgeInsets.all(24),
+                  children: [
+                    Text(exercise!.name, style: Theme.of(context).textTheme.headlineLarge),
+                    const SizedBox(height: 16),
+                    _MetadataRow(exercise: exercise),
+                    const SizedBox(height: 24),
+                    _MuscleSection(title: 'Primary muscles', muscles: exercise.primaryMuscles),
+                    const SizedBox(height: 16),
+                    _MuscleSection(title: 'Secondary muscles', muscles: exercise.secondaryMuscles),
+                    const SizedBox(height: 24),
+                    _AnatomyPlaceholder(exercise: exercise),
+                  ],
                 ),
-                const SizedBox(height: 16),
-                _MuscleSection(
-                  title: 'Secondary muscles',
-                  muscles: exercise.secondaryMuscles,
-                ),
-                const SizedBox(height: 24),
-                _AnatomyPlaceholder(exercise: exercise),
-              ],
+              ),
             );
           },
         ),

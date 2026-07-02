@@ -1,6 +1,11 @@
 import type { Express, Request, Response } from "express";
 
 import type { AppConfig } from "../../config/env.js";
+import {
+  PrismaAchievementRepository,
+  type AchievementRepository
+} from "../achievements/achievement.repository.js";
+import { AchievementService } from "../achievements/achievement.service.js";
 import { requireAuth } from "../auth-profile/auth.middleware.js";
 import {
   PrismaPersonalRecordRepository,
@@ -28,6 +33,7 @@ export type WorkoutRouteDependencies = {
   workoutRepository?: WorkoutRepository;
   personalRecordRepository?: PersonalRecordRepository;
   rankingRepository?: RankingRepository;
+  achievementRepository?: AchievementRepository;
 };
 
 export function registerWorkoutRoutes(
@@ -39,9 +45,11 @@ export function registerWorkoutRoutes(
   const personalRecordRepository =
     dependencies.personalRecordRepository ?? new PrismaPersonalRecordRepository(prisma);
   const rankingRepository = dependencies.rankingRepository ?? new PrismaRankingRepository(prisma);
+  const achievementRepository = dependencies.achievementRepository ?? new PrismaAchievementRepository(prisma);
   const service = new WorkoutService(
     repository,
-    new PersonalRecordService(personalRecordRepository, new RankingService(rankingRepository))
+    new PersonalRecordService(personalRecordRepository, new RankingService(rankingRepository)),
+    new AchievementService(achievementRepository)
   );
   const auth = requireAuth(config);
 

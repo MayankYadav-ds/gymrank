@@ -7,7 +7,6 @@ export class AchievementService {
   constructor(private readonly repository: AchievementRepository) {}
 
   async findAll(userId: string): Promise<readonly AchievementProgress[]> {
-    await this.ensureDefinitionsAndUnlock(userId);
     return this.getProgress(userId);
   }
 
@@ -17,28 +16,8 @@ export class AchievementService {
   }
 
   async getProgress(userId: string): Promise<readonly AchievementProgress[]> {
-    await this.repository.ensureDefinitions(achievementDefinitions);
-    const [achievements, unlocked, source] = await Promise.all([
-      this.repository.findAll(),
-      this.repository.findUnlockedByUser(userId),
-      this.repository.getEvaluationSource(userId)
-    ]);
-    const unlockedByAchievementId = new Map(unlocked.map((item) => [item.achievementId, item]));
-
-    return achievementDefinitions.map((definition) => {
-      const achievement = achievements.find((item) => item.id === definition.id) ?? toAchievement(definition);
-      const userAchievement = unlockedByAchievementId.get(definition.id) ?? null;
-      const currentValue = round(definition.evaluate(source));
-
-      return {
-        achievement,
-        unlocked: Boolean(userAchievement),
-        unlockedAt: userAchievement?.unlockedAt ?? null,
-        currentValue,
-        targetValue: definition.targetValue,
-        progressPercent: calculateProgressPercent(currentValue, definition.targetValue)
-      };
-    });
+    await this.ensureDefinitionsAndUnlock(userId);
+    return this.buildProgress(userId);
   }
 
   async findDetail(userId: string, achievementId: string): Promise<AchievementProgress> {
@@ -65,6 +44,30 @@ export class AchievementService {
       .map((definition) => definition.id);
 
     return this.repository.unlockMany(userId, newlyUnlocked);
+  }
+
+  private async buildProgress(userId: string): Promise<readonly AchievementProgress[]> {
+    const [achievements, unlocked, source] = await Promise.all([
+      this.repository.findAll(),
+      this.repository.findUnlockedByUser(userId),
+      this.repository.getEvaluationSource(userId)
+    ]);
+    const unlockedByAchievementId = new Map(unlocked.map((item) => [item.achievementId, item]));
+
+    return achievementDefinitions.map((definition) => {
+      const achievement = achievements.find((item) => item.id === definition.id) ?? toAchievement(definition);
+      const userAchievement = unlockedByAchievementId.get(definition.id) ?? null;
+      const currentValue = round(definition.evaluate(source));
+
+      return {
+        achievement,
+        unlocked: Boolean(userAchievement),
+        unlockedAt: userAchievement?.unlockedAt ?? null,
+        currentValue,
+        targetValue: definition.targetValue,
+        progressPercent: calculateProgressPercent(currentValue, definition.targetValue)
+      };
+    });
   }
 }
 
